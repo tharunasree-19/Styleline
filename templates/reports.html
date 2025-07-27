@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Reports Dashboard</h1>
+    <p>Generate and view various reports for your inventory management system.</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+        <div class="card" style="text-align: center;">
+            <h3>📊 Inventory Report</h3>
+            <p>View current inventory levels, stock values, and product details across all stores.</p>
+            <a href="{{ url_for('inventory_report') }}" class="btn btn-primary">Generate Inventory Report</a>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <h3>💰 Sales Report</h3>
+            <p>Analyze sales performance, revenue trends, and top-selling products.</p>
+            <a href="{{ url_for('sales_report') }}" class="btn btn-success">Generate Sales Report</a>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <h3>⚠️ Low Stock Alert</h3>
+            <p>Check products with low inventory levels that need restocking.</p>
+            <button onclick="checkLowStock()" class="btn btn-danger">Check Low Stock</button>
+        </div>
+    </div>
+    
+    <div id="lowStockResults" style="margin-top: 2rem;"></div>
+</div>
+
+<script>
+function checkLowStock() {
+    fetch('/api/inventory/check-low-stock')
+        .then(response => response.json())
+        .then(data => {
+            const resultsDiv = document.getElementById('lowStockResults');
+            if (data.success) {
+                if (data.items.length > 0) {
+                    let html = '<div class="card"><h3>Low Stock Items (' + data.count + ')</h3><table class="table">';
+                    html += '<thead><tr><th>Product ID</th><th>Store ID</th><th>Stock Quantity</th></tr></thead><tbody>';
+                    data.items.forEach(item => {
+                        html += '<tr><td>' + item.product_id + '</td><td>' + item.store_id + '</td><td>' + item.stock_quantity + '</td></tr>';
+                    });
+                    html += '</tbody></table></div>';
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<div class="alert alert-success">All products are well-stocked!</div>';
+                }
+            } else {
+                resultsDiv.innerHTML = '<div class="alert alert-error">Error checking stock: ' + data.error + '</div>';
+            }
+        })
+        .catch(error => {
+            document.getElementById('lowStockResults').innerHTML = '<div class="alert alert-error">Error: ' + error + '</div>';
+        });
+}
+</script>
+{% endblock %}

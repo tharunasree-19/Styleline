@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Sales Management - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Sales Records</h2>
+        <a href="{{ url_for('add_sale') }}" class="btn btn-success">Record New Sale</a>
+    </div>
+
+    {% if sales %}
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sale ID</th>
+                    <th>Product ID</th>
+                    <th>Store ID</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Amount</th>
+                    <th>Customer</th>
+                    <th>Sale Date</th>
+                    <th>Sold By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.sale_id[:8] }}...</td>
+                    <td>{{ sale.product_id[:8] }}...</td>
+                    <td>{{ sale.store_id[:8] }}...</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>${{ "%.2f"|format(sale.unit_price) }}</td>
+                    <td style="font-weight: bold; color: #28a745;">${{ "%.2f"|format(sale.total_amount) }}</td>
+                    <td>{{ sale.customer_name or 'Walk-in' }}</td>
+                    <td>{{ sale.sale_date[:10] if sale.sale_date else 'N/A' }}</td>
+                    <td>{{ sale.sold_by[:8] }}...</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="margin-top: 1rem; text-align: right;">
+        <strong>
+            Total Sales: ${{ "%.2f"|format(sales|sum(attribute='total_amount')) }}
+        </strong>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #666;">
+        <h3>No Sales Records Found</h3>
+        <p>Start by recording your first sale.</p>
+        <a href="{{ url_for('add_sale') }}" class="btn btn-primary">Record Your First Sale</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Quick Sales Actions</h3>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('sales_report') }}" class="btn btn-primary">Sales Report</a>
+        <a href="{{ url_for('inventory') }}" class="btn btn-success">Check Inventory</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Edit Product</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Product Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="sku">SKU</label>
+            <input type="text" class="form-control" id="sku" name="sku" value="{{ product.sku }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category" required>
+                <option value="clothing" {{ 'selected' if product.category == 'clothing' else '' }}>Clothing</option>
+                <option value="footwear" {{ 'selected' if product.category == 'footwear' else '' }}>Footwear</option>
+                <option value="accessories" {{ 'selected' if product.category == 'accessories' else '' }}>Accessories</option>
+                <option value="bags" {{ 'selected' if product.category == 'bags' else '' }}>Bags</option>
+                <option value="jewelry" {{ 'selected' if product.category == 'jewelry' else '' }}>Jewelry</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" class="form-control" id="brand" name="brand" value="{{ product.brand }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="size">Size</label>
+            <input type="text" class="form-control" id="size" name="size" value="{{ product.size }}" placeholder="e.g., S, M, L, XL or 8, 9, 10">
+        </div>
+
+        <div class="form-group">
+            <label for="color">Color</label>
+            <input type="text" class="form-control" id="color" name="color" value="{{ product.color }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Selling Price ($)</label>
+            <input type="number" class="form-control" id="price" name="price" step="0.01" value="{{ product.price }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cost">Cost Price ($)</label>
+            <input type="number" class="form-control" id="cost" name="cost" step="0.01" value="{{ product.cost }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4">{{ product.description }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Product</button>
+        <a href="{{ url_for('products') }}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory Report - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>📊 Inventory Report</h1>
+        <button onclick="window.print()" class="btn btn-primary">Print Report</button>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h3>Total Items</h3>
+            <p style="font-size: 2rem; font-weight: bold;">{{ report_data|length }}</p>
+        </div>
+        <div class="card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+            <h3>Total Value</h3>
+            <p style="font-size: 2rem; font-weight: bold;">${{ "%.2f"|format(total_value) }}</p>
+        </div>
+    </div>
+    
+    {% if report_data %}
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Store ID</th>
+                    <th>Stock Quantity</th>
+                    <th>Unit Cost</th>
+                    <th>Total Value</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in report_data %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.sku }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.store_id }}</td>
+                    <td>
+                        <span style="{% if item.stock_quantity <= 10 %}color: #dc3545; font-weight: bold;{% endif %}">
+                            {{ item.stock_quantity }}
+                        </span>
+                    </td>
+                    <td>${{ "%.2f"|format(item.cost) }}</td>
+                    <td>${{ "%.2f"|format(item.total_value) }}</td>
+                    <td>
+                        {% if item.stock_quantity <= 10 %}
+                            <span style="background: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">LOW STOCK</span>
+                        {% elif item.stock_quantity <= 50 %}
+                            <span style="background: #ffc107; color: black; padding: 4px 8px; border-radius: 4px; font-size: 12px;">MEDIUM</span>
+                        {% else %}
+                            <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">GOOD</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-error">
+        <h3>No Inventory Data Available</h3>
+        <p>There are no inventory records to display in the report.</p>
+    </div>
+    {% endif %}
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('reports') }}" class="btn btn-primary">← Back to Reports</a>
+    </div>
+</div>
+
+<style>
+@media print {
+    .header, .footer, .btn { display: none !important; }
+    .card { box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+{% endblock %}

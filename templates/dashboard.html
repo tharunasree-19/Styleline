@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - StyleLane{% endblock %}
+
+{% block content %}
+<h1 style="color: #333; margin-bottom: 2rem;">Dashboard</h1>
+
+<!-- Statistics Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+        <h3 style="margin-bottom: 0.5rem;">{{ stats.total_products or 0 }}</h3>
+        <p>Total Products</p>
+    </div>
+    
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #f093fb, #f5576c); color: white;">
+        <h3 style="margin-bottom: 0.5rem;">{{ stats.low_stock_count or 0 }}</h3>
+        <p>Low Stock Items</p>
+    </div>
+    
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #4facfe, #00f2fe); color: white;">
+        <h3 style="margin-bottom: 0.5rem;">{{ stats.recent_sales_count or 0 }}</h3>
+        <p>Recent Sales (7 days)</p>
+    </div>
+    
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white;">
+        <h3 style="margin-bottom: 0.5rem;">${{ "%.2f"|format(stats.weekly_revenue or 0) }}</h3>
+        <p>Weekly Revenue</p>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card">
+    <h3 style="margin-bottom: 1rem; color: #333;">Quick Actions</h3>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('add_product') }}" class="btn btn-primary">Add Product</a>
+        <a href="{{ url_for('add_inventory') }}" class="btn btn-success">Update Inventory</a>
+        <a href="{{ url_for('add_sale') }}" class="btn btn-primary">Record Sale</a>
+        <a href="{{ url_for('reports') }}" class="btn btn-success">View Reports</a>
+    </div>
+</div>
+
+<!-- Low Stock Alert -->
+{% if low_stock_items %}
+<div class="card" style="border-left: 4px solid #dc3545;">
+    <h3 style="margin-bottom: 1rem; color: #dc3545;">⚠️ Low Stock Alert</h3>
+    <div class="table" style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Store ID</th>
+                    <th>Current Stock</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_stock_items %}
+                <tr>
+                    <td>{{ item.product_id }}</td>
+                    <td>{{ item.store_id }}</td>
+                    <td style="color: #dc3545; font-weight: bold;">{{ item.stock_quantity }}</td>
+                    <td>
+                        <a href="{{ url_for('add_inventory') }}" class="btn btn-primary" style="font-size: 12px; padding: 5px 10px;">
+                            Restock
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p style="margin-top: 1rem;">
+        <a href="{{ url_for('inventory') }}" style="color: #667eea;">View all inventory →</a>
+    </p>
+</div>
+{% endif %}
+
+<!-- Recent Activity -->
+<div class="card">
+    <h3 style="margin-bottom: 1rem; color: #333;">Recent Activity</h3>
+    <div style="border-left: 3px solid #667eea; padding-left: 1rem;">
+        <p style="margin-bottom: 0.5rem;"><strong>System Status:</strong> All systems operational</p>
+        <p style="margin-bottom: 0.5rem;"><strong>Last Login:</strong> {{ moment().format('YYYY-MM-DD HH:mm') if moment else 'Just now' }}</p>
+        <p><strong>Active User:</strong> {{ session.user_name }} ({{ session.user_role }})</p>
+    </div>
+</div>
+{% endblock %}

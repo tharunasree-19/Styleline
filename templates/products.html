@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Products - StyleLane{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: #333;">Products</h1>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">Add New Product</a>
+</div>
+
+{% if products %}
+<div class="card">
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                    <th>Price</th>
+                    <th>Cost</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><strong>{{ product.sku }}</strong></td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.brand }}</td>
+                    <td>{{ product.size }}</td>
+                    <td>{{ product.color }}</td>
+                    <td style="color: #28a745; font-weight: bold;">${{ "%.2f"|format(product.price) }}</td>
+                    <td>${{ "%.2f"|format(product.cost) }}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{{ url_for('edit_product', product_id=product.product_id) }}" 
+                               class="btn btn-primary" 
+                               style="font-size: 12px; padding: 5px 10px;">
+                                Edit
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="margin-top: 1rem; text-align: center; color: #666;">
+    <p>Total Products: {{ products|length }}</p>
+</div>
+
+{% else %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <h3 style="color: #666; margin-bottom: 1rem;">No Products Found</h3>
+    <p style="margin-bottom: 2rem;">Get started by adding your first product to the inventory.</p>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">Add Your First Product</a>
+</div>
+{% endif %}
+{% endblock %}

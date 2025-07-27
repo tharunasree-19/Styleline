@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Error - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <div style="font-size: 6rem; margin-bottom: 1rem;">⚠️</div>
+    
+    <h1 style="color: #dc3545; margin-bottom: 1rem;">Oops! Something went wrong</h1>
+    
+    <div class="alert alert-error" style="margin: 2rem 0;">
+        <strong>Error:</strong> {{ error_message or "An unexpected error occurred." }}
+    </div>
+    
+    <p style="margin-bottom: 2rem; color: #666;">
+        We apologize for the inconvenience. Please try again or contact support if the problem persists.
+    </p>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="javascript:history.back()" class="btn btn-primary">← Go Back</a>
+        <a href="{{ url_for('dashboard') if session.user_id else url_for('home') }}" class="btn btn-success">
+            🏠 {{ 'Dashboard' if session.user_id else 'Home' }}
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Common Solutions</h3>
+    <ul style="text-align: left; color: #666;">
+        <li>Check if you have the necessary permissions to access this resource</li>
+        <li>Verify that all required fields are filled correctly</li>
+        <li>Ensure your internet connection is stable</li>
+        <li>Try refreshing the page</li>
+        <li>Clear your browser cache and cookies</li>
+    </ul>
+</div>
+
+<div class="card" style="background-color: #f8f9fa;">
+    <h4>Need Help?</h4>
+    <p>If you continue to experience issues, please contact our support team:</p>
+    <ul style="list-style: none; padding: 0;">
+        <li>📧 Email: support@stylelane.com</li>
+        <li>📞 Phone: 1-800-STYLE-LANE</li>
+        <li>💬 Live Chat: Available 24/7</li>
+    </ul>
+</div>
+{% endblock %}

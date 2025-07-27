@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Add Product - StyleLane{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: #333;">Add New Product</h1>
+    <a href="{{ url_for('products') }}" class="btn btn-primary">Back to Products</a>
+</div>
+
+<div class="card" style="max-width: 800px;">
+    <form method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="name">Product Name</label>
+                <input type="text" id="name" name="name" class="form-control" required 
+                       placeholder="e.g., Classic Cotton T-Shirt">
+            </div>
+            
+            <div class="form-group">
+                <label for="sku">SKU</label>
+                <input type="text" id="sku" name="sku" class="form-control" required 
+                       placeholder="e.g., TSH-001">
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" class="form-control" required>
+                    <option value="">Select Category</option>
+                    <option value="Tops">Tops</option>
+                    <option value="Bottoms">Bottoms</option>
+                    <option value="Dresses">Dresses</option>
+                    <option value="Outerwear">Outerwear</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Footwear">Footwear</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="brand">Brand</label>
+                <input type="text" id="brand" name="brand" class="form-control" required 
+                       placeholder="e.g., Nike">
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="size">Size</label>
+                <select id="size" name="size" class="form-control" required>
+                    <option value="">Select Size</option>
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                    <option value="XXL">XXL</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="color">Color</label>
+                <input type="text" id="color" name="color" class="form-control" required 
+                       placeholder="e.g., Navy Blue">
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="price">Selling Price ($)</label>
+                <input type="number" id="price" name="price" class="form-control" 
+                       step="0.01" min="0" required placeholder="29.99">
+            </div>
+            
+            <div class="form-group">
+                <label for="cost">Cost Price ($)</label>
+                <input type="number" id="cost" name="cost" class="form-control" 
+                       step="0.01" min="0" required placeholder="15.00">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" class="form-control" 
+                      rows="3" placeholder="Product description (optional)"></textarea>
+        </div>
+        
+        <div class="form-group" style="text-align: center; margin-top: 2rem;">
+            <button type="submit" class="btn btn-success" style="padding: 12px 30px; font-size: 1.1rem;">
+                Add Product
+            </button>
+            <a href="{{ url_for('products') }}" class="btn btn-primary" style="padding: 12px 30px; font-size: 1.1rem; margin-left: 1rem;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}StyleLane - Fashion Inventory Management{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center; margin-top: 3rem;">
+    <h1 style="color: #667eea; margin-bottom: 1rem; font-size: 3rem;">
+        Welcome to StyleLane
+    </h1>
+    <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">
+        Your comprehensive fashion inventory management solution
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('login') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 24px;">
+            Get Started
+        </a>
+        <a href="{{ url_for('register') }}" class="btn btn-success" style="font-size: 1.1rem; padding: 12px 24px;">
+            Create Account
+        </a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">📦 Inventory Management</h3>
+        <p>Track your fashion inventory across multiple stores with real-time updates and low stock alerts.</p>
+    </div>
+    
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">📊 Sales Tracking</h3>
+        <p>Monitor sales performance and generate detailed reports to optimize your business operations.</p>
+    </div>
+    
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">🏪 Multi-Store Support</h3>
+        <p>Manage inventory and sales across multiple store locations from a single centralized platform.</p>
+    </div>
+</div>
+{% endblock %}

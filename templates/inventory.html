@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory Management - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Inventory Management</h2>
+        <a href="{{ url_for('add_inventory') }}" class="btn btn-success">Add Stock</a>
+    </div>
+
+    {% if inventory %}
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>SKU</th>
+                    <th>Store ID</th>
+                    <th>Stock Quantity</th>
+                    <th>Reserved</th>
+                    <th>Available</th>
+                    <th>Status</th>
+                    <th>Last Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory %}
+                <tr>
+                    <td>{{ item.product_name or 'Unknown' }}</td>
+                    <td>{{ item.product_sku or 'N/A' }}</td>
+                    <td>{{ item.store_id }}</td>
+                    <td>{{ item.stock_quantity }}</td>
+                    <td>{{ item.reserved_quantity or 0 }}</td>
+                    <td>{{ item.stock_quantity - (item.reserved_quantity or 0) }}</td>
+                    <td>
+                        {% if item.stock_quantity <= 10 %}
+                            <span style="color: #dc3545; font-weight: bold;">Low Stock</span>
+                        {% elif item.stock_quantity <= 50 %}
+                            <span style="color: #ffc107; font-weight: bold;">Medium Stock</span>
+                        {% else %}
+                            <span style="color: #28a745; font-weight: bold;">Good Stock</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.last_updated[:10] if item.last_updated else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #666;">
+        <h3>No Inventory Records Found</h3>
+        <p>Start by adding inventory for your products.</p>
+        <a href="{{ url_for('add_inventory') }}" class="btn btn-primary">Add Your First Inventory</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Quick Actions</h3>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('api_check_low_stock') }}" class="btn btn-primary" onclick="checkLowStock()">Check Low Stock</a>
+        <a href="{{ url_for('inventory_report') }}" class="btn btn-success">Inventory Report</a>
+    </div>
+</div>
+
+<script>
+function checkLowStock() {
+    event.preventDefault();
+    fetch('/api/inventory/check-low-stock')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Found ${data.count} low stock items`);
+            } else {
+                alert('Error checking low stock: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error checking low stock');
+        });
+}
+</script>
+{% endblock %}

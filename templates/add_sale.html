@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Record New Sale - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Record New Sale</h2>
+    <form method="POST" id="saleForm">
+        <div class="form-group">
+            <label for="product_id">Product</label>
+            <select class="form-control" id="product_id" name="product_id" required onchange="updatePrice()">
+                <option value="">Select a product</option>
+                {% for product in products %}
+                <option value="{{ product.product_id }}" data-price="{{ product.price }}">
+                    {{ product.name }} ({{ product.sku }}) - ${{ "%.2f"|format(product.price) }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="store_id">Store</label>
+            <select class="form-control" id="store_id" name="store_id" required onchange="checkInventory()">
+                <option value="">Select a store</option>
+                {% for store in stores %}
+                <option value="{{ store.store_id }}">{{ store.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required onchange="calculateTotal()">
+            <small id="stockInfo" style="color: #666;"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="unit_price">Unit Price ($)</label>
+            <input type="number" class="form-control" id="unit_price" name="unit_price" step="0.01" required onchange="calculateTotal()">
+        </div>
+
+        <div class="form-group">
+            <label for="total_amount">Total Amount ($)</label>
+            <input type="number" class="form-control" id="total_amount" name="total_amount" step="0.01" readonly style="background-color: #f8f9fa;">
+        </div>
+
+        <div class="form-group">
+            <label for="customer_name">Customer Name (Optional)</label>
+            <input type="text" class="form-control" id="customer_name" name="customer_name">
+        </div>
+
+        <div class="form-group">
+            <label for="customer_email">Customer Email (Optional)</label>
+            <input type="email" class="form-control" id="customer_email" name="customer_email">
+        </div>
+
+        <button type="submit" class="btn btn-success">Record Sale</button>
+        <a href="{{ url_for('sales') }}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Sale Information</h3>
+    <p style="color: #666;">
+        • Ensure sufficient inventory before recording sale<br>
+        • Customer information is optional but helps with tracking<br>
+        • Stock will be automatically reduced after sale confirmation
+    </p>
+</div>
+
+<script>
+function updatePrice() {
+    const productSelect = document.getElementById('product_id');
+    const priceInput = document.getElementById('unit_price');
+    const selectedOption = productSelect.options[productSelect.selectedIndex];
+    
+    if (selectedOption && selectedOption.dataset.price) {
+        priceInput.value = selectedOption.dataset.price;
+        calculateTotal();
+    }
+    checkInventory();
+}
+
+function calculateTotal() {
+    const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+    const unitPrice = parseFloat(document.getElementById('unit_price').value) || 0;
+    const total = quantity * unitPrice;
+    document.getElementById('total_amount').value = total.toFixed(2);
+}
+
+function checkInventory() {
+    const productId = document.getElementById('product_id').value;
+    const storeId = document.getElementById('store_id').value;
+    const stockInfo = document.getElementById('stockInfo');
+    
+    if (productId && storeId) {
+        fetch(`/api/inventory/${productId}/${storeId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const available = data.data.stock_quantity - (data.data.reserved_quantity || 0);
+                    stockInfo.textContent = `Available stock: ${available} units`;
+                    stockInfo.style.color = available > 0 ? '#28a745' : '#dc3545';
+                } else {
+                    stockInfo.textContent = 'No inventory found for this product in selected store';
+                    stockInfo.style.color = '#dc3545';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                stockInfo.textContent = 'Error checking inventory';
+                stockInfo.style.color = '#dc3545';
+            });
+    } else {
+        stockInfo.textContent = '';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Store Management - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Store Management</h2>
+        {% if session.user_role == 'admin' %}
+        <a href="{{ url_for('add_store') }}" class="btn btn-success">Add New Store</a>
+        {% endif %}
+    </div>
+
+    {% if stores %}
+    <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Store Name</th>
+                    <th>Address</th>
+                    <th>City, State</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Manager</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for store in stores %}
+                <tr>
+                    <td style="font-weight: bold;">{{ store.name }}</td>
+                    <td>{{ store.address }}</td>
+                    <td>{{ store.city }}, {{ store.state }} {{ store.zip_code }}</td>
+                    <td>{{ store.phone }}</td>
+                    <td>{{ store.email }}</td>
+                    <td>{{ store.manager_name }}</td>
+                    <td>
+                        {% if store.is_active %}
+                            <span style="color: #28a745; font-weight: bold;">Active</span>
+                        {% else %}
+                            <span style="color: #dc3545; font-weight: bold;">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ store.created_at[:10] if store.created_at else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #666;">
+        <h3>No Stores Found</h3>
+        {% if session.user_role == 'admin' %}
+        <p>Start by adding your first store location.</p>
+        <a href="{{ url_for('add_store') }}" class="btn btn-primary">Add Your First Store</a>
+        {% else %}
+        <p>Contact your administrator to add store locations.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Store Statistics</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; text-align: center;">
+            <h4 style="color: #667eea;">{{ stores|length }}</h4>
+            <p>Total Stores</p>
+        </div>
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; text-align: center;">
+            <h4 style="color: #28a745;">{{ stores|selectattr('is_active')|list|length }}</h4>
+            <p>Active Stores</p>
+        </div>
+        <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; text-align: center;">
+            <h4 style="color: #dc3545;">{{ stores|rejectattr('is_active')|list|length }}</h4>
+            <p>Inactive Stores</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

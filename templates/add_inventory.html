@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Add Inventory - StyleLane{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Add Inventory Stock</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="product_id">Product</label>
+            <select class="form-control" id="product_id" name="product_id" required>
+                <option value="">Select a product</option>
+                {% for product in products %}
+                <option value="{{ product.product_id }}">{{ product.name }} ({{ product.sku }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="store_id">Store</label>
+            <select class="form-control" id="store_id" name="store_id" required>
+                <option value="">Select a store</option>
+                {% for store in stores %}
+                <option value="{{ store.store_id }}">{{ store.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity to Add</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+            <small style="color: #666;">This will be added to existing stock if any</small>
+        </div>
+
+        <button type="submit" class="btn btn-success">Add Stock</button>
+        <a href="{{ url_for('inventory') }}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Recent Inventory Updates</h3>
+    <p style="color: #666;">Check current inventory levels before adding new stock.</p>
+    <a href="{{ url_for('inventory') }}" class="btn btn-primary">View Current Inventory</a>
+</div>
+{% endblock %}
